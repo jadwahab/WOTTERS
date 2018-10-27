@@ -3,8 +3,11 @@ import logo from "./logo.png";
 
 import "./App.css";
 let BITBOXSDK = require("bitbox-sdk/lib/bitbox-sdk").default;
-let BITBOX = new BITBOXSDK();
+let BITBOX = new BITBOXSDK({
+  restURL: 'https://trest.bitcoin.com/v1/'
+});
 
+/* --> remove different languages
 let langs = [
   "english",
   "chinese_simplified",
@@ -15,17 +18,19 @@ let langs = [
   "italian",
   "spanish"
 ];
-
 let lang = langs[Math.floor(Math.random() * langs.length)];
+*/
 
 // create 256 bit BIP39 mnemonic
-let mnemonic = BITBOX.Mnemonic.generate(256, BITBOX.Mnemonic.wordLists()[lang]);
+// let mnemonic = BITBOX.Mnemonic.generate(256, BITBOX.Mnemonic.wordLists()[lang]); --> remove different languages
+let mnemonic = "abuse river unaware denial lake wagon slice rigid airport pool system arena slide foot install window goddess change glove hamster solar wave void tray";
 
 // root seed buffer
 let rootSeed = BITBOX.Mnemonic.toSeed(mnemonic);
 
 // master HDNode
-let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "bitcoincash");
+// let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "bitcoincash"); // -> change to mainnet
+let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "testnet"); 
 
 // HDNode of BIP44 account
 let account = BITBOX.HDNode.derivePath(masterHDNode, "m/44'/145'/0'");
@@ -41,7 +46,7 @@ class App extends Component {
     super(props);
     this.state = {
       mnemonic: mnemonic,
-      lang: lang,
+      // lang: lang, --> remove different languages
       hex: "",
       txid: ""
     };
@@ -53,6 +58,8 @@ class App extends Component {
         if (!result[0]) {
           return;
         }
+        console.log(result);
+        return false;
 
         // instance of transaction builder
         let transactionBuilder = new BITBOX.TransactionBuilder("bitcoincash");
@@ -138,7 +145,7 @@ class App extends Component {
         </header>
         <div className="App-content">
           <h2>BIP44 $BCH Wallet</h2>
-          <h3>256 bit {lang} BIP39 Mnemonic:</h3> <p>{this.state.mnemonic}</p>
+          <h3>256 bit BIP39 Mnemonic:</h3> <p>{this.state.mnemonic}</p>
           <h3>BIP44 Account</h3>
           <p>
             <code>"m/44'/145'/0'"</code>
