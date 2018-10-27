@@ -59,7 +59,7 @@ class App extends Component {
           return;
         }
 
-        console.log(result);
+        // console.log(result);
         // return false;
 
         // instance of transaction builder
@@ -91,19 +91,20 @@ class App extends Component {
         // add output w/ address and amount to send
         transactionBuilder.addOutput(cashAddress, sendAmount);
         */
-
+     
         // OP_RETURN DATA
         // encode some text as a buffer
         let buf = new Buffer('BCHDEVON WINNERS: WOTTERS');
         // create array w/ OP_RETURN code and text buffer and encode
         let data = BITBOX.Script.encode([
         BITBOX.Script.opcodes.OP_RETURN,
+        Buffer.from('00574f54', 'hex'),
         buf
         ])
         // add encoded data as output and send 0 satoshis
         transactionBuilder.addOutput(data, 0);
         transactionBuilder.addOutput(cashAddress, sendAmount);
-        console.log("Satoshis spent: " + sendAmount);
+        console.log("Satoshis spent: " + byteCount);
 
         // keypair
         let keyPair = BITBOX.HDNode.toKeyPair(change);
@@ -137,6 +138,15 @@ class App extends Component {
             console.log(err);
           }
         );
+
+        console.log(`BIP44 Account: m/44'/145'/0'`);
+        console.log(`BIP44 external change addresses:`);
+        let addresses = [];
+        for (let i = 0; i < 10; i++) {
+          let account = masterHDNode.derivePath(`m/44'/145'/0'/0/${i}`);
+          addresses.push(BITBOX.HDNode.toCashAddress(account));
+        }
+        console.log(addresses);
       },
       err => {
         console.log(err);
@@ -145,16 +155,6 @@ class App extends Component {
   }
 
   render() {
-    let addresses = [];
-    for (let i = 0; i < 10; i++) {
-      let account = masterHDNode.derivePath(`m/44'/145'/0'/0/${i}`);
-      addresses.push(
-        <li key={i}>
-          m/44&rsquo;/145&rsquo;/0&rsquo;/0/
-          {i}: {BITBOX.HDNode.toCashAddress(account)}
-        </li>
-      );
-    }
     return (
       <div className="App">
         <header className="App-header">
@@ -164,15 +164,10 @@ class App extends Component {
         <div className="App-content">
           <h2>BIP44 $BCH Wallet</h2>
           <h3>256 bit BIP39 Mnemonic:</h3> <p>{this.state.mnemonic}</p>
-          <h3>BIP44 Account</h3>
-          <p>
-            <code>"m/44'/145'/0'"</code>
-          </p>
-          <h3>BIP44 external change addresses</h3>
-          <ul>{addresses}</ul>
-          <h3>Transaction raw hex</h3>
+
+          <h3>Output transaction raw hex</h3>
           <p>{this.state.hex}</p>
-          <h3>Transaction ID</h3>
+          <h3>Output transaction ID</h3>
           <p>{this.state.txid}</p>
         </div>
       </div>
