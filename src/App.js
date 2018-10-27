@@ -58,17 +58,19 @@ class App extends Component {
         if (!result[0]) {
           return;
         }
+
         console.log(result);
-        return false;
+        // return false;
 
         // instance of transaction builder
-        let transactionBuilder = new BITBOX.TransactionBuilder("bitcoincash");
+        // let transactionBuilder = new BITBOX.TransactionBuilder("bitcoincash"); // -> change to mainnet
+        let transactionBuilder = new BITBOX.TransactionBuilder("testnet");
         // original amount of satoshis in vin
         let originalAmount = result[0].satoshis;
 
         // index of vout
         let vout = result[0].vout;
-
+        
         // txid of vout
         let txid = result[0].txid;
 
@@ -78,14 +80,30 @@ class App extends Component {
         // get byte count to calculate fee. paying 1 sat/byte
         let byteCount = BITBOX.BitcoinCash.getByteCount(
           { P2PKH: 1 },
-          { P2PKH: 1 }
+          { P2PKH: 3 }
         );
         // 192
         // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
         let sendAmount = originalAmount - byteCount;
 
+
+        /* -> send to change address
         // add output w/ address and amount to send
         transactionBuilder.addOutput(cashAddress, sendAmount);
+        */
+
+        // OP_RETURN DATA
+        // encode some text as a buffer
+        let buf = new Buffer('BCHDEVON WINNERS: WOTTERS');
+        // create array w/ OP_RETURN code and text buffer and encode
+        let data = BITBOX.Script.encode([
+        BITBOX.Script.opcodes.OP_RETURN,
+        buf
+        ])
+        // add encoded data as output and send 0 satoshis
+        transactionBuilder.addOutput(data, 0);
+        transactionBuilder.addOutput(cashAddress, sendAmount);
+        console.log("Satoshis spent: " + sendAmount);
 
         // keypair
         let keyPair = BITBOX.HDNode.toKeyPair(change);
