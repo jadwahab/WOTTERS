@@ -4,7 +4,8 @@ import logo from "./logo.png";
 import "./App.css";
 let BITBOXSDK = require("bitbox-sdk/lib/bitbox-sdk").default;
 let BITBOX = new BITBOXSDK({
-  restURL: 'https://trest.bitcoin.com/v1/'
+  restURL: 'https://rest.bitcoin.com/v1/'
+  // restURL: 'https://trest.bitcoin.com/v1/'
 });
 
 /* --> remove different languages
@@ -29,8 +30,8 @@ let mnemonic = "abuse river unaware denial lake wagon slice rigid airport pool s
 let rootSeed = BITBOX.Mnemonic.toSeed(mnemonic);
 
 // master HDNode
-// let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "bitcoincash"); // -> change to mainnet
-let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "testnet"); 
+let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "bitcoincash"); // -> change to mainnet
+// let masterHDNode = BITBOX.HDNode.fromSeed(rootSeed, "testnet"); 
 
 // HDNode of BIP44 account
 let account = BITBOX.HDNode.derivePath(masterHDNode, "m/44'/145'/0'");
@@ -63,8 +64,8 @@ class App extends Component {
         // return false;
 
         // instance of transaction builder
-        // let transactionBuilder = new BITBOX.TransactionBuilder("bitcoincash"); // -> change to mainnet
-        let transactionBuilder = new BITBOX.TransactionBuilder("testnet");
+        let transactionBuilder = new BITBOX.TransactionBuilder("bitcoincash"); // -> change to mainnet
+        // let transactionBuilder = new BITBOX.TransactionBuilder("testnet");
         // original amount of satoshis in vin
         let originalAmount = result[0].satoshis;
 
@@ -86,18 +87,13 @@ class App extends Component {
         // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
         let sendAmount = originalAmount - byteCount;
 
-
-        /* -> send to change address
-        // add output w/ address and amount to send
-        transactionBuilder.addOutput(cashAddress, sendAmount);
-        */
-
         // OP_RETURN DATA
         // encode some text as a buffer
-        let buf = new Buffer('BCHDEVON WINNERS: WOTTERS');
+        let buf = new Buffer('BCHDEVCON: TRUST OR NOT');
         // create array w/ OP_RETURN code and text buffer and encode
         let data = BITBOX.Script.encode([
         BITBOX.Script.opcodes.OP_RETURN,
+        Buffer.from('00574f54', 'hex'),
         buf
         ])
         // add encoded data as output and send 0 satoshis
