@@ -1,0 +1,30 @@
+
+
+// Url: "https://wotters.blob.core.windows.net/images/{imageHash}.jpg"
+
+[
+    {
+        "hash": "7cbb",
+        "pubKey": "0x45623423",
+        "assignment": "White hat, green sweater, devil sign",
+        "prevHash": "9ee3",
+        "imageHash": "AAAA",
+        "timeStamp": "2018-01-01 12:31"
+    }, 
+    {
+        "hash": "8a34",
+        "pubKey": "0x34524543",
+        "assignment": "Green hat, red sweater, peace sign",
+        "prevHash": "9ee3",
+        "imageHash": "4805_110886908573_8281698_n",
+        "timeStamp": "2018-01-01 12:30"
+    }, 
+    {
+        "hash": "9ee3",
+        "pubKey": "0x34452834",
+        "assignment": "Blue hat, white sweater, o sign",
+        "prevHash": "6e3b",
+        "imageHash": "582069_10151283054588574_1283163895_n",
+        "timeStamp": "2018-01-01 12:12"
+    }
+]

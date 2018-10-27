@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <input type="file" id="fileinput" />
+        <button id="upload-button">Upload</button>
+
+        <button id="list-button">List</button>
+
+    </body>
+    <script src="scripts/azure-storage.blob.min.js" charset="utf-8"></script>
+    <script>
+        const account = {
+            name: "wotters",
+            sas:  "se=2099-01-01&sp=rwdlac&sv=2018-03-28&ss=b&srt=sco&sig=Tre0bT/ks8SP01B7KAigI1dh5w9RYShUniIzW0HnadI%3D"
+        };
+
+        const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+        const blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, account.sas);
+
+        document.getElementById('upload-button').addEventListener('click', () => {
+
+            const file = document.getElementById('fileinput').files[0];
+            
+            blobService.createBlockBlobFromBrowserFile('images', 
+                                                        file.name, 
+                                                        file, 
+                                                        (error, result) => {
+                                                            if(error) {
+                                                                // Handle blob error
+                                                            } else {
+                                                                console.log('Upload is successful');
+                                                            }
+                                                        });
+        });
+
+
+        document.getElementById('list-button').addEventListener('click', () => {
+
+            blobService.listBlobsSegmented('images', null, (error, results) => {
+                if (error) {
+                    // Handle list blobs error
+                } else {
+                    results.entries.forEach(blob => {
+                        console.log(blob.name);
+                    });
+                }
+            });
+
+        });
+
+
+
+    </script>
+</html>
