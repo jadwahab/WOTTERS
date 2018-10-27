@@ -134,7 +134,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Hello BITBOX</h1>
+          <h1 className="App-title">WOTTERS</h1>
         </header>
         <div className="App-content">
           <h2>BIP44 $BCH Wallet</h2>
