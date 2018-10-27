@@ -22,14 +22,14 @@ const colors = new Array(
 
 class Assignment {
 	constructor() {
-		this.challenge = this.updateAssignment("abcdef1234567890abcdebcdef1234567890abcd");
+		this.challenge = this.updateChallenge("abcdef1234567890abcdebcdef1234567890abcd");
     };
     
 	getColor(ordinal) {
 		return colors[ordinal];
 	}
     
-    updateUpdate(hash, difficulty=1) {
+    updateChallenge(hash, difficulty=1) {
     	if(difficulty == 1) {
     		let clothTop = ((hash[21] % 1) == 0)? "jacket":"hat";
     		let clothTopColor = this.getColor(parseInt(hash[20], 16));
@@ -44,7 +44,7 @@ class Assignment {
 	getChallenge() {
 		BITBOX.Blockchain.getBestBlockHash().then(
 			hash => {
-				this.challenge = this.updateAssignment(hash);
+				this.challenge = this.updateChallenge(hash);
 			},
 			err => {
 				console.log(err);
