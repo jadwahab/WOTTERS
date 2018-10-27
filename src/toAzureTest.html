@@ -17,20 +17,38 @@
         const blobUri = 'https://' + account.name + '.blob.core.windows.net';
         const blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, account.sas);
 
+        // define objects we need
+        var buffer = new Buffer;
+        var reader = new FileReader();
+        
+        // when the file is read, create a blob from it!
+        reader.onload = function(e) {
+          var text = reader.result;
+          console.log(text);
+          let buffer = Buffer.from(text, 'hex')
+          var hashname = BITBOX.Crypto.sha256(buffer)
+           
+          blobService.createBlockBlobFromBrowserFile('images', 
+                                                      hashname, 
+                                                      file, 
+                                                      (error, result) => {
+                                                          if(error) {
+                                                              // Handle blob error
+                                                          } else {
+                                                              console.log('Upload is successful');
+                                                          }
+                                                      });
+        }
+
+
         document.getElementById('upload-button').addEventListener('click', () => {
 
             const file = document.getElementById('fileinput').files[0];
             
-            blobService.createBlockBlobFromBrowserFile('images', 
-                                                        file.name, 
-                                                        file, 
-                                                        (error, result) => {
-                                                            if(error) {
-                                                                // Handle blob error
-                                                            } else {
-                                                                console.log('Upload is successful');
-                                                            }
-                                                        });
+            console.log(file);
+            reader.readAsBinaryString(file);
+ 
+            
         });
 
 
